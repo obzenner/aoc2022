@@ -68,7 +68,7 @@ export const day3 = async () => {
         return acc + mutualItems;
     }, 0)
     
-    const groupRucksacks = [...groupsOfThree].reduce((acc, cur) => {
+    const groupRucksacks = groupsOfThree.reduce((acc, cur) => {
         const mutualItems = checkGroup(cur);
         return acc + [...mutualItems.values()].reduce((acc, curr) => acc + curr, 0);
     }, 0);
