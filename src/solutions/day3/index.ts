@@ -2,20 +2,12 @@ import { access } from "fs";
 import loadFile from "../../utils/loadFile";
 import { splitByEmptyLine } from "../../utils/splitByEmptyLine";
 
-const az = [..."abcdefghijklmnopqrstuvwxyz"];
-const AZ = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+const az = [..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 
 const az_PRIO = az.reduce((acc, cur, i) => {
     acc.set(cur, i + 1);
     return acc;
 }, new Map<string, number>());
-
-const AZ_PRIO = AZ.reduce((acc, cur, i) => {
-    acc.set(cur, i + 27);
-    return acc;
-}, new Map<string, number>());
-
-const isUpperCase = (char: string) => { return AZ.includes(char); };
 
 const checkRucksack = (items: string) => {
     const comp1 = items.substring(0, items.length/2);
@@ -23,7 +15,7 @@ const checkRucksack = (items: string) => {
 
     const mutualItems = [...comp1].reduce((acc, cur) => {
         if (comp2.includes(cur)) {
-            const prio = isUpperCase(cur) ? AZ_PRIO.get(cur) : az_PRIO.get(cur);
+            const prio = az_PRIO.get(cur);
             acc.set(cur, prio);
         }
         return acc;
@@ -42,7 +34,7 @@ const checkGroup = (group: string[]) => {
         }, 0);
 
         if (counter > 1) {
-            const prio = isUpperCase(cur) ? AZ_PRIO.get(cur) : az_PRIO.get(cur);
+            const prio = az_PRIO.get(cur);
             acc.set(cur, prio);
         }
         return acc;
@@ -51,7 +43,7 @@ const checkGroup = (group: string[]) => {
     return mutualItems;
 }
 
-const chunkArry = (arr: string[], size: number) => {
+const chunkArray = (arr: string[], size: number) => {
     const chunked_arr = [];
     for (let i = 0; i < arr.length; i += size) {
         chunked_arr.push(arr.slice(i, i + size));
@@ -61,7 +53,7 @@ const chunkArry = (arr: string[], size: number) => {
 
 export const day3 = async () => {
     const input = splitByEmptyLine(await loadFile('day3.txt'));
-    const groupsOfThree = chunkArry(input, 3);
+    const groupsOfThree = chunkArray(input, 3);
 
     const rucksacks = input.reduce((acc, cur) => {
         const mutualItems = checkRucksack(cur);
