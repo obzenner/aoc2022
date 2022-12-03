@@ -51,30 +51,24 @@ const checkGroup = (group: string[]) => {
     return mutualItems;
 }
 
+const chunkArry = (arr: string[], size: number) => {
+    const chunked_arr = [];
+    for (let i = 0; i < arr.length; i += size) {
+        chunked_arr.push(arr.slice(i, i + size));
+    }
+    return chunked_arr;
+}
+
 export const day3 = async () => {
     const input = splitByEmptyLine(await loadFile('day3.txt'));
-    const groupsOfThree = input.reduce((acc, curr) => {
-        const { counter, tick } = acc;
-        const exists = acc.groups.get(counter);
-
-        if (tick < 3) {
-            acc.groups.set(counter, exists ? [...exists, curr] : [curr]);
-            acc.tick++;
-        } else {
-            acc.counter++;
-            acc.tick = 1;
-            acc.groups.set(acc.counter, [curr]);
-        }
-
-        return acc;
-    }, { groups: new Map(), counter: 0, tick: 0 });
+    const groupsOfThree = chunkArry(input, 3);
 
     const rucksacks = input.reduce((acc, cur) => {
         const mutualItems = checkRucksack(cur);
         return acc + mutualItems;
     }, 0)
     
-    const groupRucksacks = [...groupsOfThree.groups.values()].reduce((acc, cur) => {
+    const groupRucksacks = [...groupsOfThree].reduce((acc, cur) => {
         const mutualItems = checkGroup(cur);
         return acc + [...mutualItems.values()].reduce((acc, curr) => acc + curr, 0);
     }, 0);
