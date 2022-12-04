@@ -3,7 +3,11 @@ import { splitByEmptyLine } from "../../utils/splitByEmptyLine";
 
 
 const range = (start: number, end: number) => {
-    return Array.from({ length: end - start + 1}, (_, i) => start + i);
+    const res = new Set();
+    for (let i = start; i <= end; i++) {
+        res.add(i);
+    };
+    return res;
 }
 
 const comparePairs = (pairs: string[][][]) => {
@@ -33,10 +37,10 @@ const partialMatch = (pairs: string[][][]) => {
         const [p1, p2] = curr;
     
         const p1Range = range(parseInt(p1[0]), parseInt(p1[1]));
-        const p2Range = range(parseInt(p2[0]), parseInt(p2[1]));
+        const p2Range = Array.from(range(parseInt(p2[0]), parseInt(p2[1])))
 
         const p1RangeSet = new Set(p1Range);
-    
+
         for (let i  = 0; i < p2Range.length; i++) {
             if (p1RangeSet.has(p2Range[i])) {
                 acc++;
