@@ -34,9 +34,11 @@ const partialMatch = (pairs: string[][][]) => {
     
         const p1Range = range(parseInt(p1[0]), parseInt(p1[1]));
         const p2Range = range(parseInt(p2[0]), parseInt(p2[1]));
+
+        const p1RangeSet = new Set(p1Range);
     
         for (let i  = 0; i < p2Range.length; i++) {
-            if (p1Range.includes(p2Range[i])) {
+            if (p1RangeSet.has(p2Range[i])) {
                 acc++;
                 return acc;
             }
