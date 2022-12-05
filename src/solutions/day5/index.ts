@@ -1,7 +1,7 @@
 import loadFile from "../../utils/loadFile";
 import { splitByEmptyLine } from "../../utils/splitByEmptyLine";
 
-type Program = Record<'q' | 'd' | 'o', number>[];
+type Program = Record<'quantity' | 'origin' | 'destination', number>[];
 
 const isEmpty = (crate: string) => crate === ' ';
 
@@ -9,9 +9,9 @@ const exe = (input: Map<number, string[]>, program: Program, reverse = true) => 
     const inputMap = new Map(input); // to avoid mutation
 
     for (let i = 0; i < program.length; i++) {
-        const origin = program[i].o;
-        const destination = program[i].d;
-        const quantity = program[i].q;
+        const origin = program[i].origin;
+        const destination = program[i].destination;
+        const quantity = program[i].quantity;
 
         if (origin === 0) {
             console.log(program[i], i);
@@ -81,15 +81,11 @@ export const day5 = async () => {
 
     // prep program object
     const program: Program = instructions.reduce((acc, line) => {
-        const v = line.split(' ')
+        const [quantity, origin, destination] = line.split(' ')
             .filter(v => !isNaN(parseInt(v)))
             .map(c => parseInt(c));
 
-        acc.push({
-            q: v[0],
-            o: v[1],
-            d: v[2]
-        })
+        acc.push({ quantity, origin, destination })
         return acc;
     }, [] as Program)
 
