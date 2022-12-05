@@ -59,7 +59,7 @@ const getMappedCrates = (crates: string[], crateCharIndexes: number[]) => {
     
         }
         return acc;
-    }, new Map());
+    }, new Map() as Map<number, string[]>);
     
     return mappedCrates;
 }
