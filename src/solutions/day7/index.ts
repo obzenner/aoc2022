@@ -138,9 +138,10 @@ const part2 = (rawInput: string) => {
 }
 
 export const day7 = async () => {
+    const input = await loadFile('day7.txt');
 
     return {
-        part1: part1(await loadFile('day7.txt')),
-        part2: part2(await loadFile('day7.txt'))
+        part1: part1(input),
+        part2: part2(input)
     }
 }
