@@ -106,6 +106,7 @@ const parseInput = (rawInput: string) => {
 
 const getDirSizes = (rawInput: string) => {
     const input = parseInput(rawInput)
+
     const dirSizes: number[] = []
 
     const recur = (disk: Disk) => {
