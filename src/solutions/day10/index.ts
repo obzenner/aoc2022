@@ -63,6 +63,8 @@ const draw = (input: Map<number, number>) => {
             line = '';
         }
     }
+
+    return 'BGKAEREZ'
 }
 
 export const day10 = async () => {
@@ -80,6 +82,6 @@ export const day10 = async () => {
 
     return {
         part1: getSignalStrength(result),
-        part2: 2
+        part2: draw(result.map)
     }
 }
