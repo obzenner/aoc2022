@@ -26,7 +26,7 @@ const playRound = (monkeys: Monkey[], disableStressRelief = false): Monkey[] => 
         const [value1, operation, value2] = op;
 
         while (monkeysClone[i].items.length) {
-            const item = monkeysClone[i].items.shift();
+            const item = monkeysClone[i].items.shift(); // may just as well use a for loop and set to [] when done
 
             let newValue = 0;
             const v1 = value1 === 'old' ? item : parseInt(value1);
