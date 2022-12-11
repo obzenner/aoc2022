@@ -72,7 +72,7 @@ export const day10 = async () => {
             command,
             value: value ? parseInt(value) : null
         }
-    });// Draws a 10x10 box at (0, 0)raws a 10x10 box at (0, 0)
+    });
 
     const result = runProgram(input);
 
