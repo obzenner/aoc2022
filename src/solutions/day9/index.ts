@@ -74,7 +74,6 @@ export const day9 = async () => {
             const step = input[i];
             const { dir, dist } = step;
 
-            let currentHead;
             for (let j = 0; j < dist; j++) {
                 for (let k = 0; k < tails.length; k++) {
                     const tail = tails[k];
@@ -83,9 +82,8 @@ export const day9 = async () => {
                     if (isHead) {
                         tail.position = calcTailPostion({ head: tail.position, dir });
                     } else {
-                        currentHead = tails[k - 1];
                         tail.position = calcTailPostion({
-                            head: currentHead.position,
+                            head: tails[k - 1].position,
                             tail: tail.position,
                             dir,
                             isHead: false
