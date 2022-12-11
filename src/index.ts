@@ -6,6 +6,7 @@ import { day5 } from './solutions/day5';
 import { day6 } from './solutions/day6';
 import { day7 } from './solutions/day7';
 import { day8 } from './solutions/day8';
+import { day9 } from './solutions/day9';
 
 
 (async () => {
@@ -17,6 +18,7 @@ import { day8 } from './solutions/day8';
     const day6res = await day6();
     const day7res = await day7();
     const day8res = await day8();
+    const day9res = await day9();
 
     const res = {
         day1: day1res,
@@ -27,6 +29,7 @@ import { day8 } from './solutions/day8';
         day6: day6res,
         day7: day7res,
         day8: day8res,
+        day9: day9res,
     }
     console.log(res);
 })();
