@@ -98,7 +98,7 @@ export const day11 = async () => {
 
     let part1 = playRound(input);
     for (let i = 0; i < 19; i++) {
-        part1 = playRound([...part1]);
+        part1 = playRound(part1);
     }
 
     let part2 = playRound(input, true);
