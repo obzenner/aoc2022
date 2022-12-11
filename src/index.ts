@@ -34,5 +34,4 @@ import { day10 } from './solutions/day10';
         day9: day9res,
         day10: day10res,
     }
-    console.log(res);
 })();

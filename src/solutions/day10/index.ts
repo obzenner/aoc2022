@@ -45,6 +45,25 @@ const getSignalStrength = (input: { cycle: number, x: number, map: Map<number, n
     return strength;
 }
 
+const draw = (input: Map<number, number>) => {
+    let line = '';
+    for (let i = 0; i <= input.size; i++) {
+        const X: number = input.get(i + 1);
+        const spritePosition = [X - 1, X, X + 1];
+        const x = i % 40;
+        
+        if (x < 39) {
+            if (spritePosition.includes(x)) {
+                line += '#';
+            } else {
+                line += '.';
+            }
+        } else {
+            console.log(line);
+            line = '';
+        }
+    }
+}
 
 export const day10 = async () => {
     const input = splitByEmptyLine(await loadFile('day10.txt')).map(l => {
@@ -53,11 +72,14 @@ export const day10 = async () => {
             command,
             value: value ? parseInt(value) : null
         }
-    });
+    });// Draws a 10x10 box at (0, 0)raws a 10x10 box at (0, 0)
 
-    const map = runProgram(input);
+    const result = runProgram(input);
+
+    draw(result.map);
+
     return {
-        part1: getSignalStrength(map),
+        part1: getSignalStrength(result),
         part2: 2
     }
 }
