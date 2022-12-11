@@ -78,8 +78,6 @@ export const day10 = async () => {
 
     const result = runProgram(input);
 
-    draw(result.map);
-
     return {
         part1: getSignalStrength(result),
         part2: draw(result.map)
