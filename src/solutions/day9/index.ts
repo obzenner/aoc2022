@@ -18,6 +18,25 @@ export const day9 = async () => {
         'D': [0, -1]
     }
 
+    const calcTailPostion = (head: { x: number, y: number },
+        tail: { x: number, y: number },
+        dir: string) => {
+        const [dx, dy] = directions[dir];
+        const prevHead = { ...head };
+
+        head.x += dx;
+        head.y += dy;
+
+        // Manhattan distance
+        const distance = Math.max(Math.abs(head.x - tail.x), Math.abs(head.y - tail.y));
+
+        if (distance > 1) {
+            tail = prevHead;
+        }
+
+        return tail;
+    }
+
     const initPath = {
         head: { x: 0, y: 0 },
         tail: { x: 0, y: 0 },
@@ -29,26 +48,12 @@ export const day9 = async () => {
 
     const path = input.reduce((acc, step) => {
         const { dir, dist } = step;
-        const [dx, dy] = directions[dir];
 
         for (let i = 0; i < dist; i++) {
-            const prevHead = { ...acc.head };
-
-            acc.head.x += dx;
-            acc.head.y += dy;
-
-            // Manhattan distance
-            const distance = Math.max(Math.abs(acc.head.x - acc.tail.x), Math.abs(acc.head.y - acc.tail.y));
-
-            if (distance > 1) {
-                acc.tail = prevHead;
-
-                const tailKey = `x:${acc.tail.x};y:${acc.tail.y}`;
-                const tailExists = acc.tailMemo.get(tailKey);
-                acc.tailMemo.set(tailKey, tailExists ? tailExists + 1 : 1);
-
-            }
-
+            acc.tail = calcTailPostion(acc.head, acc.tail, dir);
+            const tailKey = `x:${acc.tail.x};y:${acc.tail.y}`;
+            const tailExists = acc.tailMemo.get(tailKey);
+            acc.tailMemo.set(tailKey, tailExists ? tailExists + 1 : 1);
 
             const key = `x:${acc.head.x};y:${acc.head.y}`;
             const exists = acc.memo.get(key);
