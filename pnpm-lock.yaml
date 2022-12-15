@@ -5,11 +5,13 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.46.0
   '@typescript-eslint/parser': ^5.46.0
   eslint: ^8.29.0
+  js-graph-algorithms: ^1.0.18
   ts-node: ^10.9.1
   typescript: ^4.9.3
 
 dependencies:
   '@types/node': 18.11.10
+  js-graph-algorithms: 1.0.18
   ts-node: 10.9.1_eoe7put6ewfbqpy6gs36tihw6y
   typescript: 4.9.3
 
@@ -705,6 +707,11 @@ packages:
   /isexe/2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
+
+  /js-graph-algorithms/1.0.18:
+    resolution: {integrity: sha512-Gu1wtWzXBzGeye/j9BuyplGHscwqKRZodp/0M1vyBc19RJpblSwKGu099KwwaTx9cRIV+Qupk8xUMfEiGfFqSA==}
+    hasBin: true
+    dev: false
 
   /js-sdsl/4.2.0:
     resolution: {integrity: sha512-dyBIzQBDkCqCu+0upx25Y2jGdbTGxE9fshMsCdK0ViOongpV+n5tXRcZY9v7CaVQ79AGS9KA1KHtojxiM7aXSQ==}
