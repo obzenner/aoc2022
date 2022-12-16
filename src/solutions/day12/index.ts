@@ -1,90 +1,141 @@
 import loadFile from "../../utils/loadFile";
 import { splitByEmptyLine } from "../../utils/splitByEmptyLine";
 
-const lowercase: string[] = Array.from(Array(26)).map((e, i) => i + 97).map(x => String.fromCharCode(x))
+const weightsAlpha: Record<string, number> = {
+  S: 0,
+  E: 0,
+  a: 1,
+  b: 2,
+  c: 3,
+  d: 4,
+  e: 5,
+  f: 6,
+  g: 7,
+  h: 8,
+  i: 9,
+  j: 10,
+  k: 11,
+  l: 12,
+  m: 13,
+  n: 14,
+  o: 15,
+  p: 16,
+  q: 17,
+  r: 18,
+  s: 19,
+  t: 20,
+  u: 21,
+  v: 22,
+  w: 23,
+  x: 24,
+  y: 25,
+  z: 26
+} as const;
 
-type Point = [number, number]
-type Matrix<T> = T[][]
-type ElevMap = Matrix<number>
+const walk = (graph: Record<string, Record<string, number>>, start: string, end: string) => {
+  const visited: Record<string, boolean> = {};
+  const queue = [start];
+  const distances: Record<string, number> = {};
+  distances[start] = 0;
 
-function parseMap(input: string[]): [Point, Point, Point, ElevMap] {
-  let start: Point = [0, 0]
-  let target: Point = [0, 0]
-  const chartDim: Point = [input.length, input[0].length]
-  const elevMap: ElevMap = Array(chartDim[0]).fill(0).map(_ => new Array(chartDim[1]))
-  input.forEach((row, x) => {
-    row.split('').forEach((square, y) => {
-      if (square === 'S') {
-        start = [x, y]
-        elevMap[x][y] = lowercase.indexOf('a')
-      } else if (square === 'E') {
-        target = [x, y]
-        elevMap[x][y] = lowercase.indexOf('z')
-      } else {
-        elevMap[x][y] = lowercase.indexOf(square)
-      }
-    })
-  })
-  return [start, target, chartDim, elevMap]
-}
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const currentDistance = distances[current];
 
-function getNeighbors([x, y]: Point, chartDim: Point): Point[] {
-  const offsets: Point[] = [[-1, 0], [1, 0], [0, 1], [0, -1]]
-  const points: Point[] = offsets.map(([dx, dy]) => [x + dx, y + dy])
-  return points.filter(point => point.every(x => x >= 0) && point[0] < chartDim[0] && point[1] < chartDim[1])
-}
+    if (current === end) {
+      return {
+        distance: currentDistance,
+        path: Object.keys(distances)
+      };
+    }
 
-function part1(input: string[]): (string | number) {
-  const [start, end, charDim, elevMap] = parseMap(input)
-  let queue: [Point, number][] = [[start, 0]]
-  const visited: Set<string> = new Set()
-  while (queue.length) {
-    const [currentPoint, steps] = queue.shift()!
-    if (visited.has(currentPoint.toString())) {
+    if (visited[current]) {
       continue;
     }
-    visited.add(currentPoint.toString())
-    if (currentPoint.toString() === end.toString()) {
-      return steps
+
+    visited[current] = true;
+
+    const neighbors = graph[current];
+    for (const neighbor in neighbors) {
+      const distance = neighbors[neighbor];
+      const newDistance = currentDistance + distance;
+
+      if (!distances[neighbor] || newDistance < distances[neighbor]) {
+        distances[neighbor] = newDistance;
+        queue.push(neighbor);
+      }
     }
-    // just if current point isn't the tartet add to queue all possible next steps.
-    // do it as long as you hit the target
-    const neighbors: Point[] = getNeighbors(currentPoint, charDim)
-    const possibleValues: Point[] = neighbors.filter(point => elevMap[point[0]][point[1]] <= elevMap[currentPoint[0]][currentPoint[1]] + 1)
-    queue = queue.concat(possibleValues.map(point => [point, steps + 1]))
   }
-  return 'Shortest path not found'
 }
 
-// find shortest path from any point with elevation 'a' (0)
-// so in reverse, we can find shortest path from end to first 'a'
-function part2(input: string[]): (string | number) {
-  const [start, end, charDim, elevMap] = parseMap(input)
-  let queue: [Point, number][] = [[end, 0]]
-  const visited: Set<string> = new Set()
 
-  while (queue.length) {
-    const [currentPoint, steps] = queue.shift()!
-    if (visited.has(currentPoint.toString())) {
-      continue
+const buildGraph = (input: string[]) => {
+  const graph: Record<string, Record<string, number>> = {};
+
+  for (let i = 0; i < input.length; i++) {
+    const xEls = input[i];
+
+    for (let j = 0; j < xEls.length; j++) {
+      const currentEl = xEls[j];
+      const nh1 = xEls[j + 1];
+      const nh2 = xEls[j - 1];
+      const nv1 = input[i - 1] ? input[i - 1][j] : null;
+      const nv2 = input[i + 1] ? input[i + 1][j] : null;
+
+      const currKey = `${currentEl}-${i}-${j}`;
+      const nh1Key = `${nh1}-${i}-${j + 1}`;
+      const nh2Key = `${nh2}-${i}-${j - 1}`;
+      const nv1Key = `${nv1}-${i - 1}-${j}`;
+      const nv2Key = `${nv2}-${i + 1}-${j}`;
+
+      const currNodes = {};
+
+      const currWeight = weightsAlpha[currentEl];
+      if (nh1) {
+        const nh1Weight = weightsAlpha[nh1];
+        graph[currKey] = Object.assign(currNodes, {
+          [nh1Key]: Math.abs(nh1Weight - currWeight),
+        });
+      }
+
+      if (nh2) {
+        const nh2Weight = weightsAlpha[nh2];
+        graph[currKey] = Object.assign(currNodes, {
+          [nh2Key]: Math.abs(nh2Weight - currWeight),
+        });
+      }
+
+      if (nv1) {
+        const nv1Weight = weightsAlpha[nv1];
+        graph[currKey] = Object.assign(currNodes, {
+          [nv1Key]: Math.abs(nv1Weight - currWeight),
+        });
+      }
+
+      if (nv2) {
+        const nv2Weight = weightsAlpha[nv2];
+        graph[currKey] = Object.assign(currNodes, {
+          [nv2Key]: Math.abs(nv2Weight - currWeight),
+        });
+      }
     }
-    visited.add(currentPoint.toString())
-    if (elevMap[currentPoint[0]][currentPoint[1]] === 0) {
-      return steps
-    }
-    const neighbors: Point[] = getNeighbors(currentPoint, charDim)
-    const possibleValues: Point[] = neighbors.filter(point => elevMap[point[0]][point[1]] >= elevMap[currentPoint[0]][currentPoint[1]] - 1)
-    queue = queue.concat(possibleValues.map(point => [point, steps + 1]))
   }
-  return 'Shortest path not found'
-}
 
+  return graph;
+}
 
 export const day12 = async () => {
   const input = splitByEmptyLine(await loadFile('day12.txt'));
 
+  const graph = buildGraph(input);
+  const findEndNode = Object.keys(graph).find(k => k.includes('E'));
+  console.log(graph)
+
+  const res = walk(graph, 'S-0-0', 'E-20-146');
+  console.log(res)
+
   return {
-    part1: part1(input),
-    part2: part2(input)
+    part1: 1,
+    part2: 2
   }
 }
