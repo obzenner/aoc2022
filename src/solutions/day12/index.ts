@@ -32,45 +32,6 @@ const weightsAlpha: Record<string, number> = {
   z: 26
 } as const;
 
-const walk = (graph: Record<string, Record<string, number>>, start: string, end: string) => {
-  const visited: Record<string, boolean> = {};
-  const queue = [start];
-  const distances: Record<string, number> = {};
-  distances[start] = 0;
-
-  
-  while (queue.length > 0) {
-    const current = queue.shift();
-    const currentDistance = distances[current];
-    
-    if (current === end) {
-      return {
-        distance: currentDistance,
-        path: Object.keys(distances)
-      };
-    }
-    
-    if (visited[current]) {
-      continue;
-    }
-    
-    visited[current] = true;
-    console.log(current, currentDistance, end, visited)
-    
-    const neighbors = graph[current];
-    console.log(neighbors)
-    for (const neighbor in neighbors) {
-      const distance = neighbors[neighbor];
-      const newDistance = currentDistance + distance;
-
-      if (!distances[neighbor] || newDistance < distances[neighbor]) {
-        distances[neighbor] = newDistance;
-        queue.push(neighbor);
-      }
-    }
-  }
-}
-
 
 const buildGraph = (input: string[]) => {
   const graph: Record<string, Record<string, number>> = {};
@@ -133,9 +94,6 @@ export const day12 = async () => {
   const graph = buildGraph(input);
   const findEndNode = Object.keys(graph).find(k => k.includes('E'));
   const findStartNode = Object.keys(graph).find(k => k.includes('S'));
-
-  const res = walk(graph, findStartNode, findEndNode);
-  console.log(res)
 
   return {
     part1: 1,
