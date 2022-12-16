@@ -38,24 +38,27 @@ const walk = (graph: Record<string, Record<string, number>>, start: string, end:
   const distances: Record<string, number> = {};
   distances[start] = 0;
 
+  
   while (queue.length > 0) {
     const current = queue.shift();
     const currentDistance = distances[current];
-
+    
     if (current === end) {
       return {
         distance: currentDistance,
         path: Object.keys(distances)
       };
     }
-
+    
     if (visited[current]) {
       continue;
     }
-
+    
     visited[current] = true;
-
+    console.log(current, currentDistance, end, visited)
+    
     const neighbors = graph[current];
+    console.log(neighbors)
     for (const neighbor in neighbors) {
       const distance = neighbors[neighbor];
       const newDistance = currentDistance + distance;
@@ -129,9 +132,9 @@ export const day12 = async () => {
 
   const graph = buildGraph(input);
   const findEndNode = Object.keys(graph).find(k => k.includes('E'));
-  console.log(graph)
+  const findStartNode = Object.keys(graph).find(k => k.includes('S'));
 
-  const res = walk(graph, 'S-0-0', 'E-20-146');
+  const res = walk(graph, findStartNode, findEndNode);
   console.log(res)
 
   return {
