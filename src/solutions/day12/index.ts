@@ -97,21 +97,20 @@ const bfsNodes = (graph: Record<string, Record<string, number>>, startNode: stri
     const currNode = queue.shift();
     const currNodeNeighbors = graph[currNode];
     const currWeight = weightsAlpha[currNode[0]];
-    
+
     const destinations = Object.keys(currNodeNeighbors)
-    .filter(k => currNodeNeighbors[k] <= currWeight + 1);
-    
+      .filter(k => currNodeNeighbors[k] <= currWeight + 1);
+
     for (const d of destinations) {
       if (!visited.has(d)) {
         visited.add(d);
         // eslint-disable-next-line no-prototype-builtins
-        if (!nodes.hasOwnProperty(d)) {
+        if (!nodes.hasOwnProperty(d)) { // check if node is already in nodes
           nodes[d] = currNode;
         }
         queue.push(d);
       }
-      
-      console.log(d, currNode);
+
       if (d === endNode) {
         return nodes;
       }
@@ -121,25 +120,97 @@ const bfsNodes = (graph: Record<string, Record<string, number>>, startNode: stri
   return nodes;
 }
 
+const getSteps = (nodes: Record<string, string>, endNode: string) => {
+  const steps = [];
+  let node = endNode;
+
+  while (nodes[node]) {
+    steps.push(node);
+    node = nodes[node];
+  }
+
+  return steps;
+}
+
+const preparePossibleInputs = (input: string[]) => {
+  const temp = input.reduce((acc, curr) => {
+    const line = curr.split('');
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === 'a' || line[i] === 'S') {
+        line[i] = 'a';
+      }
+    }
+    acc.push(line.join(''));
+    return acc;
+  }, []);
+
+  const lowestPointCoordinates: number[][] = temp.reduce((acc, curr, i) => {
+    const line = curr.split('');
+    if (i === 0 || i === input.length) {
+      for (let j = 0; j < line.length; j++) {
+        if (line[j] === 'a' || line[j] === 'S') {
+          acc.push([i, j]);
+        }
+      }
+    } else {
+      if (line[0] === 'a' || line[0] === 'S') {
+        acc.push([i, 0]);
+      }
+
+      if (line[line.length - 1] === 'a' || line[line.length - 1] === 'S') {
+        acc.push([i, line.length - 1]);
+      }
+    }
+
+    return acc;
+  }, [] as [number, number][]);
+
+  const possibleInputs = lowestPointCoordinates.reduce((acc, sc) => {
+    const [i, j] = sc;
+    const newInput = [...temp];
+    for (let line = 0; line < input.length; line++) {
+      if (line === i) {
+        const temp = newInput[i].split('');
+        temp[j] = 'S';
+        newInput[i] = temp.join('');
+      }
+    }
+    acc.push(newInput);
+    return acc;
+  }, [] as string[][]);
+
+  return possibleInputs;
+}
+
 export const day12 = async () => {
   const input = splitByEmptyLine(await loadFile('day12.txt'));
-
   const graph = buildGraph(input);
   const startNode = Object.keys(graph).find(k => k.includes('S'));
   const endNode = Object.keys(graph).find(k => k.includes('E'));
 
-  // console.log(graph)
   const nodes = bfsNodes(graph, startNode, endNode);
-	const steps = [];
-	let node = endNode;
+  const part1Steps = getSteps(nodes, endNode);
 
-	while (nodes[node]) {
-		steps.push(node);
-		node = nodes[node];
-	}
+  const part2Inputs = preparePossibleInputs(input);
+  const part2Steps = part2Inputs.reduce((acc, input) => {
+    const graph = buildGraph(input);
+    const startNode = Object.keys(graph).find(k => k.includes('S'));
+    const endNode = Object.keys(graph).find(k => k.includes('E'));
+
+    const nodes = bfsNodes(graph, startNode, endNode);
+    const steps = getSteps(nodes, endNode);
+
+    if (steps.length > 0) {
+      acc.push(steps);
+    }
+
+    return acc;
+  }, [] as string[][]);
+
+  const part2Length = part2Steps.sort((a, b) => a.length - b.length)[0].length;
 
   return {
-    part1: steps.length,
-    part2: 2
+    part1: part1Steps.length,
+    part2: part2Length
   }
 }
