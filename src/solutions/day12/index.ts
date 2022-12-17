@@ -207,10 +207,19 @@ export const day12 = async () => {
     return acc;
   }, [] as string[][]);
 
-  const part2Length = part2Steps.sort((a, b) => a.length - b.length)[0].length;
+  const graphForDragon = part1Steps.reduce((acc, curr) => {
+    const weight = weightsAlpha[curr[0]];
+    const x = parseInt(curr[2], 10);
+    const y = parseInt(curr[4], 10);
+    acc.push([x, y, weight]);
+    return acc;
+  }, [] as number[][]);
+
+  const part2Length = part2Steps.sort((a, b) => a.length - b.length)[0].length
 
   return {
     part1: part1Steps.length,
-    part2: part2Length
+    part2: part2Length,
+    graphForDragon
   }
 }
