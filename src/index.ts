@@ -10,6 +10,7 @@ import { day9 } from './solutions/day9';
 import { day10 } from './solutions/day10';
 import { day11 } from './solutions/day11';
 import { day12 } from './solutions/day12';
+import { day13 } from './solutions/day13';
 
 
 (async () => {
@@ -25,8 +26,9 @@ import { day12 } from './solutions/day12';
         // day9: await day9(),
         // day10: await day10(),
         // day11: await day11(),
-        day12: await day12(),
+        // day12: await day12(),
+        day13: await day13(),
     }
-
+    
     console.log(res);
 })();
